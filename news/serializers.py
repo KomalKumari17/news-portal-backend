@@ -26,10 +26,11 @@ class NewsSerializer(serializers.ModelSerializer):
     area = AreaSerializer(read_only=True)
     category_id = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), source='category', write_only=True)
     area_id = serializers.PrimaryKeyRelatedField(queryset=Area.objects.all(), source='area', write_only=True)
+    image = serializers.ImageField(required=False, allow_null=True)
 
     class Meta:
         model = News
-        fields = ['id', 'title', 'content', 'category', 'area', 'category_id', 'area_id', 'created_at', 'updated_at']
+        fields = ['id', 'title', 'content', 'image', 'category', 'area', 'category_id', 'area_id', 'created_at', 'updated_at']
 
 class CommentSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField(read_only=True)

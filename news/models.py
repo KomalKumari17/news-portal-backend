@@ -39,6 +39,7 @@ class Area(models.Model):
 class News(models.Model):
     title = models.CharField(max_length=200)
     content = models.TextField()
+    image = models.ImageField(upload_to='news_images/', null=True, blank=True)
     category = models.ForeignKey(
         Category, on_delete=models.CASCADE, related_name="news"
     )
