@@ -78,14 +78,14 @@ class DistrictViewSet(viewsets.ModelViewSet):
     search_fields = ['name']
     ordering_fields = ['name']
 
-@method_decorator(csrf_exempt, name='dispatch')
-class RegisterView(APIView):
-    def post(self, request):
-        serializer = UserRegisterSerializer(data=request.data)
-        if serializer.is_valid():
-            user = serializer.save()
-            return Response({'message': 'User registered successfully'}, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+# @method_decorator(csrf_exempt, name='dispatch')
+# class RegisterView(APIView):
+#     def post(self, request):
+#         serializer = UserRegisterSerializer(data=request.data)
+#         if serializer.is_valid():
+#             user = serializer.save()
+#             return Response({'message': 'User registered successfully'}, status=status.HTTP_201_CREATED)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @method_decorator(csrf_exempt, name='dispatch')
 class LoginView(APIView):
@@ -140,5 +140,5 @@ class RegisterUser(APIView):
         return Response({
             'payload': serializer.data,
             'role': user.role,
-            'message': 'Check your email to verify your account.'
+            # 'message': 'Check your email to verify your account.'
         }, status=status.HTTP_200_OK)
