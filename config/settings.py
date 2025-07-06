@@ -142,6 +142,13 @@ SPECTACULAR_SETTINGS = {
     'SERVE_PERMISSIONS': ['rest_framework.permissions.AllowAny'],
 }
 
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'News API',
+    'DESCRIPTION': 'API for managing news, categories, areas, and comments.',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': True,
+}
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
