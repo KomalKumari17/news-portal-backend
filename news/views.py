@@ -35,7 +35,7 @@ class NewsViewSet(viewsets.ModelViewSet):
     filter_backends = [filters.SearchFilter, filters.OrderingFilter, DjangoFilterBackend]
     search_fields = ['title', 'content', 'category__name', 'area__name', 'area__district__name']
     ordering_fields = ['created_at']
-    filterset_fields = ['category', 'area', 'area__district']
+    filterset_fields = ['category__name', 'area__name', 'area__district__name']
 
     def get_permissions(self):
         if self.action in ['list', 'retrieve']:
