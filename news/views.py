@@ -146,3 +146,27 @@ class AdminRegisterView(APIView):
             'payload': serializer.data,
             'role': user.role,
         }, status=status.HTTP_200_OK)
+
+class UserInfoView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        return Response({
+            'username': user.username,
+            'email': user.email,
+            'full_name': user.full_name,
+            'role': user.role,
+            'last_login': user.last_login,
+            'date_joined': user.date_joined,
+            'is_active': user.is_active,
+            'is_staff': user.is_staff,
+        }, status=status.HTTP_200_OK)
+
+    def put(self, request):
+        user = request.user
+        serializer = UserRegisterSerializer(user, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
