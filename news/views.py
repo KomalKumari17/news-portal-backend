@@ -118,27 +118,31 @@ class LoginView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @method_decorator(csrf_exempt, name='dispatch')
-class RegisterUser(APIView):
-    @extend_schema(request=UserRegisterSerializer, responses={200: UserRegisterSerializer})
-    def post(self, request, role=None):
-        serializer_class = {
-            'admin': AdminRegisterSerializer,
-            'user': UserRegisterSerializer
-        }.get(role, UserRegisterSerializer)
-
-        serializer = serializer_class(data=request.data)
+class UserRegisterView(APIView):
+    @extend_schema(request=UserRegisterSerializer)
+    def post(self, request):
+        serializer = UserRegisterSerializer(data=request.data)
         if not serializer.is_valid():
             return Response({'error': serializer.errors}, status=status.HTTP_409_CONFLICT)
-
         user = serializer.save()
-        user.role = role if role in ['admin', 'user'] else 'user'
+        user.role = 'user'
         user.save(update_fields=['role'])
-        # otp = send_otp_via_email(user.email)
-        # user.otp = otp
-        # user.otp_created_at = now()
-        # user.save(update_fields=['otp', 'otp_created_at'])
         return Response({
             'payload': serializer.data,
             'role': user.role,
-            # 'message': 'Check your email to verify your account.'
+        }, status=status.HTTP_200_OK)
+
+@method_decorator(csrf_exempt, name='dispatch')
+class AdminRegisterView(APIView):
+    @extend_schema(request=AdminRegisterSerializer)
+    def post(self, request):
+        serializer = AdminRegisterSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response({'error': serializer.errors}, status=status.HTTP_409_CONFLICT)
+        user = serializer.save()
+        user.role = 'admin'
+        user.save(update_fields=['role'])
+        return Response({
+            'payload': serializer.data,
+            'role': user.role,
         }, status=status.HTTP_200_OK)
