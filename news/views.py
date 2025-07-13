@@ -13,6 +13,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from rest_framework_simplejwt.tokens import RefreshToken
 from django_filters.rest_framework import DjangoFilterBackend
+from django.conf import settings
 
 # Create your views here.
 
@@ -132,6 +133,7 @@ class UserRegisterView(APIView):
             'role': user.role,
         }, status=status.HTTP_200_OK)
 
+
 @method_decorator(csrf_exempt, name='dispatch')
 class AdminRegisterView(APIView):
     @extend_schema(request=AdminRegisterSerializer)
@@ -147,9 +149,9 @@ class AdminRegisterView(APIView):
             'role': user.role,
         }, status=status.HTTP_200_OK)
 
+
 class UserInfoView(APIView):
     permission_classes = [permissions.IsAuthenticated]
-
     def get(self, request):
         user = request.user
         return Response({
@@ -170,3 +172,20 @@ class UserInfoView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+class LogoutView(APIView):
+    def post(self, request):
+        response = Response({'message': 'Logged out successfully'})
+        # Delete access token cookie
+        response.delete_cookie(
+            key=settings.SIMPLE_JWT['AUTH_COOKIE'],
+            path=settings.SIMPLE_JWT['AUTH_COOKIE_PATH'],
+        )
+        # Delete refresh token cookie (if used)
+        response.delete_cookie(
+            key='refresh_token',
+            path='/api/auth/refresh/',
+        )
+
+        return response
