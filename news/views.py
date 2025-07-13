@@ -19,7 +19,6 @@ from django_filters.rest_framework import DjangoFilterBackend
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    permission_classes = [IsAdminUser]
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['name']
     ordering_fields = ['name']
@@ -27,7 +26,6 @@ class CategoryViewSet(viewsets.ModelViewSet):
 class AreaViewSet(viewsets.ModelViewSet):
     queryset = Area.objects.all()
     serializer_class = AreaSerializer
-    permission_classes = [IsAdminUser]
 
 class NewsViewSet(viewsets.ModelViewSet):
     queryset = News.objects.all().order_by('-created_at')
@@ -36,11 +34,6 @@ class NewsViewSet(viewsets.ModelViewSet):
     search_fields = ['title', 'content', 'category__name', 'area__name', 'area__district__name']
     ordering_fields = ['created_at']
     filterset_fields = ['category__name', 'area__name', 'area__district__name']
-
-    def get_permissions(self):
-        if self.action in ['list', 'retrieve']:
-            return [permissions.AllowAny()]
-        return [IsAdminUser()]
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -73,7 +66,6 @@ class CommentViewSet(viewsets.ModelViewSet):
 class DistrictViewSet(viewsets.ModelViewSet):
     queryset = District.objects.all()
     serializer_class = DistrictSerializer
-    permission_classes = [IsAdminUser]
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['name']
     ordering_fields = ['name']
@@ -96,7 +88,12 @@ class LoginView(APIView):
             user = authenticate(username=serializer.validated_data['username'], password=serializer.validated_data['password'])
             if user:
                 refresh = RefreshToken.for_user(user)
-                response = Response({'message': 'Login successful'}, status=status.HTTP_200_OK)
+                response = Response({
+                    'message': 'Login successful',
+                    'user': {
+                        'role': user.role,
+                    }
+                }, status=status.HTTP_200_OK)
                 response.set_cookie(
                     key='access_token',
                     value=str(refresh.access_token),
@@ -114,7 +111,10 @@ class LoginView(APIView):
                     max_age=60*60*24*7,  # 7 days
                 )
                 return response
-            return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+            else:
+                return Response({
+                    'error': 'Invalid credentials'
+                }, status=status.HTTP_401_UNAUTHORIZED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @method_decorator(csrf_exempt, name='dispatch')
