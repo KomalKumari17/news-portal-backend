@@ -39,6 +39,22 @@ class Command(BaseCommand):
         admin = User.objects.create_user(username='admin', email='admin@example.com', password='adminpass', role='admin', is_staff=True)
         user = User.objects.create_user(username='user', email='user@example.com', password='userpass', role='user')
 
+        # Additional admin and user accounts
+        for i in range(1, 4):
+            User.objects.create_user(
+                username=f'admin{i}',
+                email=f'admin{i}@example.com',
+                password='adminpass',
+                role='admin',
+                is_staff=True
+            )
+            User.objects.create_user(
+                username=f'user{i}',
+                email=f'user{i}@example.com',
+                password='userpass',
+                role='user'
+            )
+
         # News titles and content samples
         news_samples = {
             'Politics': [
