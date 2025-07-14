@@ -14,6 +14,7 @@ from django.utils.decorators import method_decorator
 from rest_framework_simplejwt.tokens import RefreshToken
 from django_filters.rest_framework import DjangoFilterBackend
 from django.conf import settings
+from rest_framework.decorators import action
 # Create your views here.
 
 class CategoryViewSet(viewsets.ModelViewSet):
@@ -23,9 +24,19 @@ class CategoryViewSet(viewsets.ModelViewSet):
     search_fields = ['name']
     ordering_fields = ['name']
 
+    @action(detail=False, methods=['get'])
+    def count(self, request):
+        count = self.queryset.count()
+        return Response({'count': count}, status=status.HTTP_200_OK)
+
 class AreaViewSet(viewsets.ModelViewSet):
     queryset = Area.objects.all()
     serializer_class = AreaSerializer
+
+    @action(detail=False, methods=['get'])
+    def count(self, request):
+        count = self.queryset.count()
+        return Response({'count': count}, status=status.HTTP_200_OK)
 
 class NewsViewSet(viewsets.ModelViewSet):
     queryset = News.objects.all().order_by('-created_at')
@@ -47,6 +58,11 @@ class NewsViewSet(viewsets.ModelViewSet):
         if district:
             queryset = queryset.filter(area__district_id=district)
         return queryset
+    
+    @action(detail=False, methods=['get'])
+    def count(self, request):
+        count = self.queryset.count()
+        return Response({'count': count}, status=status.HTTP_200_OK)
 
 class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all().order_by('-created_at')
@@ -62,6 +78,11 @@ class CommentViewSet(viewsets.ModelViewSet):
         if news_id:
             queryset = queryset.filter(news_id=news_id)
         return queryset
+    
+    @action(detail=False, methods=['get'])
+    def count(self, request):
+        count = self.queryset.count()
+        return Response({'count': count}, status=status.HTTP_200_OK)
 
 class DistrictViewSet(viewsets.ModelViewSet):
     queryset = District.objects.all()
