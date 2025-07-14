@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -167,3 +168,25 @@ CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
 ]
+
+
+
+SIMPLE_JWT = {
+    # Token lifetimes
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=5),
+    
+    # Refresh token settings
+    "ROTATE_REFRESH_TOKENS": True,       # Auto-issue new refresh tokens
+    "BLACKLIST_AFTER_ROTATION": True,    # Invalidate old refresh tokens
+    
+    # Cookie settings
+    'AUTH_COOKIE': 'access_token',
+    'AUTH_COOKIE_HTTP_ONLY': False,
+    'AUTH_COOKIE_SECURE': False,          # False in local dev if no HTTPS
+    'AUTH_COOKIE_SAMESITE': None,       # 'Strict' for maximum security
+    'AUTH_COOKIE_PATH': '/',
+    'AUTH_COOKIE_DOMAIN': None,          # Set to '.yourdomain.com' if needed
+
+}
+

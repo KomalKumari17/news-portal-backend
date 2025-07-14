@@ -1,6 +1,6 @@
 from rest_framework.routers import DefaultRouter
 from django.urls import path
-from .views import CategoryViewSet, AreaViewSet, NewsViewSet, CommentViewSet, AdminRegisterView, LoginView, DistrictViewSet, UserRegisterView, AdminRegisterView, UserInfoView
+from .views import CategoryViewSet, AreaViewSet, NewsViewSet, CommentViewSet, AdminRegisterView, LoginView, DistrictViewSet, UserRegisterView, AdminRegisterView, UserInfoView, LogoutView
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
 
 router = DefaultRouter()
@@ -17,6 +17,7 @@ urlpatterns += [
     path('auth/register/admin/', AdminRegisterView.as_view(), name='register-admin'),
     path('auth/user/info/', UserInfoView.as_view(), name='user-info'),
     path('auth/login/', LoginView.as_view(), name='login'),
+    path('auth/logout/', LogoutView.as_view(), name='logout'),
     path('schema/', SpectacularAPIView.as_view(), name='schema'),
     path('schema/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
     path('schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
