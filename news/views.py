@@ -44,7 +44,7 @@ class NewsViewSet(viewsets.ModelViewSet):
     filter_backends = [filters.SearchFilter, filters.OrderingFilter, DjangoFilterBackend]
     search_fields = ['title', 'content', 'category__name', 'area__name', 'area__district__name']
     ordering_fields = ['created_at']
-    filterset_fields = ['category__name', 'area__name', 'area__district__name']
+    filterset_fields = ['category', 'area__name', 'area__district__name']
 
     def get_queryset(self):
         queryset = super().get_queryset()
